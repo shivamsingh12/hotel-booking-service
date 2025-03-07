@@ -1,11 +1,15 @@
 const { createUser, login, getUsers, logout } = require("./user.controller");
+const { userSchemas, $ref } = require("./user.schema");
 
 async function userRoutes(app) {
+  for (let schema of userSchemas) {
+    app.addSchema(schema);
+  }
   app.get(
     "/",
-    {
-      preHandler: [app.authenticate],
-    },
+    // {
+    //   preHandler: [app.authenticate],
+    // },
     getUsers
   );
   app.post(

@@ -26,11 +26,11 @@ const loginSchema = z.object({
 const loginResponseSchema = z.object({
   accessToken: z.string(),
 });
-// to build our JSON schema, we use buildJsonSchemas from fastify-zod
-// it returns all the schemas to register and a ref to refer these schemas
-module.exports = { schemas: userSchemas, $ref } = buildJsonSchemas({
+
+const { schemas: userSchemas, $ref } = buildJsonSchemas({
   createUserSchema,
   createUserResponseSchema,
   loginSchema,
   loginResponseSchema,
 });
+module.exports = { userSchemas, $ref };

@@ -18,3 +18,21 @@ model User {
   name String?
   password String
 }
+model Hotel {
+  id String @id @default(cuid())
+  name String 
+  description String
+  moreDescription String
+  reviews String
+  ratings String
+}
+model Booking {
+  id String @id @default(cuid())
+  hotelId String 
+  userId String
+  bookedFor String
+  members String
+  status String
+  from String
+  to String
+}

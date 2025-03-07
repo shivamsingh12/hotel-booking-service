@@ -2,10 +2,7 @@ const fastify = require("fastify")({
   logger: true,
 });
 const cors = require("@fastify/cors");
-const userSchema = require("./modules/user/user.schema");
-for (let schema of [...userSchemas]) {
-  fastify.addSchema(schema);
-}
+
 const fjwt = require("@fastify/jwt");
 const fCookie = require("@fastify/cookie");
 
@@ -31,6 +28,9 @@ fastify.decorate("authenticate", async (req, reply) => {
 
 fastify.register(cors, { origin: "*" });
 fastify.register(require("./modules/user/user.route"), { prefix: "api/users" });
+fastify.register(require("./modules/hotel/hotel.route"), {
+  prefix: "api/hotel",
+});
 
 fastify.listen({ port: 8000 }, function (err, address) {
   if (err) {
