@@ -29,7 +29,7 @@ fastify.decorate("authenticate", async (req, reply) => {
 fastify.register(cors, { origin: "*" });
 fastify.register(require("./modules/user/user.route"), { prefix: "api/users" });
 fastify.register(require("./modules/hotel/hotel.route"), {
-  prefix: "api/hotel",
+  prefix: "api/hotels",
 });
 
 fastify.listen({ port: 8000 }, function (err, address) {
