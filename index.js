@@ -31,6 +31,9 @@ fastify.register(require("./modules/user/user.route"), { prefix: "api/users" });
 fastify.register(require("./modules/hotel/hotel.route"), {
   prefix: "api/hotels",
 });
+fastify.register(require("./modules/booking/booking.route"), {
+  prefix: "api/bookings",
+});
 
 fastify.listen({ port: 8000 }, function (err, address) {
   if (err) {

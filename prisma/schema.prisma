@@ -33,6 +33,6 @@ model Booking {
   bookedFor String
   members String
   status String
-  from String
-  to String
+  from Int
+  to Int
 }
