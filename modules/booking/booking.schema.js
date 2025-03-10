@@ -15,8 +15,19 @@ const bookingResponseSchema = z.object({
   members: z.string(),
 });
 
+const checkinSchema = z.object({
+  hotelId: z.string().min(10).max(30),
+  members: z.string().min(10).max(200),
+});
+
+const checkoutSchema = z.object({
+  hotelId: z.string().min(10).max(30),
+});
+
 const { schemas: bookingSchemas, $ref } = buildJsonSchemas({
   createBookingSchema,
   bookingResponseSchema,
+  checkinSchema,
+  checkoutSchema,
 });
 module.exports = { bookingSchemas, $ref };

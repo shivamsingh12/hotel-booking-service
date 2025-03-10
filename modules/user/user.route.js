@@ -7,9 +7,9 @@ async function userRoutes(app) {
   }
   app.get(
     "/",
-    // {
-    //   preHandler: [app.authenticate],
-    // },
+    {
+      preHandler: [app.authenticate],
+    },
     getUsers
   );
   app.post(
@@ -36,7 +36,13 @@ async function userRoutes(app) {
     },
     login
   );
-  app.delete("/logout", logout);
+  app.delete(
+    "/logout",
+    {
+      preHandler: [app.authenticate],
+    },
+    logout
+  );
   app.log.info("user routes registered");
 }
 

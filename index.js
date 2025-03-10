@@ -19,6 +19,7 @@ fastify.register(fCookie, {
 
 fastify.decorate("authenticate", async (req, reply) => {
   const token = req.cookies.access_token;
+  console.log(JSON.stringify(req.cookies));
   if (!token) {
     return reply.status(401).send({ message: "Authentication required" });
   }
@@ -26,7 +27,7 @@ fastify.decorate("authenticate", async (req, reply) => {
   req.user = decoded;
 });
 
-fastify.register(cors, { origin: "*" });
+fastify.register(cors, { origin: "http://localhost:3000", credentials: true });
 fastify.register(require("./modules/user/user.route"), { prefix: "api/users" });
 fastify.register(require("./modules/hotel/hotel.route"), {
   prefix: "api/hotels",

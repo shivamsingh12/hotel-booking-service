@@ -2,6 +2,8 @@ const { bookingSchemas, $ref } = require("./booking.schema");
 const {
   createBooking,
   getHotelBookingsForUser,
+  createCheckin,
+  createCheckout,
 } = require("./booking.controller");
 
 async function bookingRoutes(app) {
@@ -22,6 +24,25 @@ async function bookingRoutes(app) {
       },
     },
     createBooking
+  );
+
+  app.post(
+    "/checkin",
+    {
+      schema: {
+        body: $ref("checkinSchema"),
+      },
+    },
+    createCheckin
+  );
+  app.post(
+    "/checkout",
+    {
+      schema: {
+        body: $ref("checkoutSchema"),
+      },
+    },
+    createCheckout
   );
   app.get("/:hotelId", getHotelBookingsForUser);
   app.log.info("booking routes registered");

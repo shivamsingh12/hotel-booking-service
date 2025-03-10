@@ -18,7 +18,9 @@ async function createBooking(req, reply) {
         JSON.stringify(prevBooking)
     );
     if (prevBooking.length > 0) {
-      return reply.send({ message: "booking already present for user" });
+      return reply
+        .code(400)
+        .send({ message: "booking already present for user" });
     }
     const booking = await prisma.booking.create({
       data: {
@@ -53,10 +55,80 @@ async function getHotelBookingsForUser(req, reply) {
         JSON.stringify(prevBooking)
     );
 
-    return reply.code(200).send(prevBooking[0]);
+    return reply.code(200).send(prevBooking);
   } catch (e) {
     return reply.code(500).send(e);
   }
 }
 
-module.exports = { createBooking, getHotelBookingsForUser };
+async function createCheckin(req, reply) {
+  const { hotelId, members } = req.body;
+  const { id: userId } = parseJwt(req.cookies.access_token);
+
+  try {
+    const prevBooking = await prisma.booking.findMany({
+      where: {
+        hotelId: hotelId,
+        userId: userId,
+      },
+    });
+    if (prevBooking.length == 0) {
+      return reply.code(400).send({ message: "no booking present for user" });
+    } else if (prevBooking[0].status == "CHECKEDIN") {
+      return reply
+        .code(400)
+        .send({ message: "check in already present for booking" });
+    } else if (prevBooking[0].status == "BOOKED") {
+      const booking = await prisma.booking.updateMany({
+        where: {
+          hotelId: hotelId,
+          userId: userId,
+        },
+        data: { status: "CHECKEDIN", members: members },
+      });
+      return reply.code(200).send(booking);
+    } else {
+      return reply.code(500).send({ message: "something went wrong" });
+    }
+  } catch (e) {
+    return reply.code(500).send(e);
+  }
+}
+
+async function createCheckout(req, reply) {
+  const { hotelId } = req.body;
+  const { id: userId } = parseJwt(req.cookies.access_token);
+
+  try {
+    const prevBooking = await prisma.booking.findMany({
+      where: {
+        hotelId: hotelId,
+        userId: userId,
+      },
+    });
+    if (prevBooking.length == 0) {
+      return reply.code(400).send({ message: "no booking present for user" });
+    } else if (prevBooking[0].status == "BOOKED") {
+      return reply.code(400).send({ message: "no check in found for booking" });
+    } else if (prevBooking[0].status == "CHECKEDIN") {
+      const booking = await prisma.booking.deleteMany({
+        where: {
+          hotelId: hotelId,
+          userId: userId,
+        },
+      });
+      return reply.code(200).send(booking);
+    } else {
+      return reply.code(500).send({ message: "something went wrong" });
+    }
+  } catch (e) {
+    return reply.code(500).send(e);
+  }
+}
+
+module.exports = {
+  createBooking,
+  getHotelBookingsForUser,
+  createCheckin,
+  createCheckout,
+};
